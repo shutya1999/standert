@@ -1,0 +1,567 @@
+@import "vars"
+
+*
+  box-sizing: border-box
+
+  &::before, &::after
+    box-sizing: border-box
+
+
+\:root
+  --padding-container: 16px
+  --header-height: 84px
+
+.main
+  overflow: hidden
+  //margin-top: var(--header-height)
+
+
+html
+  font-family: 'Inter', sans-serif
+  font-style: normal
+  font-weight: 300
+  line-height: 140%
+  letter-spacing: 0
+
+
+ul[class], ol[class]
+  padding: 0
+
+body, h1, h2, h3, h4, p, ul[class], ol[class], li, figure, figcaption, blockquote, dl, dd
+  margin: 0
+
+h1, h2, h3, h4, h5, h6
+  font-size: inherit
+  font-weight: inherit
+
+body
+  scroll-behavior: smooth
+  text-rendering: optimizeSpeed
+  font-size: rem(14)
+  line-height: rem(17)
+  color: var(--black)
+  background-color: var(--bg-gray)
+  &._hide-scroll
+    overflow: hidden
+
+
+ul[class], ol[class]
+  list-style: none
+
+ul, ol
+  list-style-position: inside
+  margin: 0
+  padding: 0
+
+a
+  text-decoration: none
+
+img
+  max-width: 100%
+  display: block
+
+
+article > * + *
+  margin-top: 1em
+
+input, button, textarea, select
+  font: inherit
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active
+  -webkit-background-clip: text
+  -webkit-text-fill-color: white
+  transition: background-color 5000s ease-in-out 0s
+  box-shadow: inset 0 0 20px 20px rgba(0, 0, 0, 0)
+  -webkit-appearance: none
+  -webkit-border-radius: 0
+
+
+.container
+  padding: 0 var(--padding-container)
+  margin: 0 auto
+  max-width: 950px
+
+.title
+  color: black
+  font-size: rem(30)
+  font-weight: 400
+  line-height: normal
+
+
+// CUSTOM SELECT
+.select
+  position: relative
+  width: 100%
+  background: white
+  border: 1px solid black
+  & .help-block
+    position: absolute
+    top: calc(100% + 4px)
+    color: #eb2915
+    margin-left: 12px
+    margin-top: 4px
+    font-weight: 400
+    font-size: 12px
+    line-height: 16px
+    transform: translateY(-30%)
+    opacity: 0
+    transition: all .2s
+  &.select_show
+    z-index: 3!important
+    & .select__toggle
+      &:after
+        transform: translateY(-50%) rotate(180deg)
+    & .select__dropdown, & .select__backdrop
+      &:not(._empty)
+        max-height: 230px
+
+  &._selected
+    & .select__toggle
+      & label
+        opacity: 0
+        pointer-events: none
+  &.has-error
+    margin-bottom: 30px
+    & .select__toggle
+      &:before
+        opacity: 1
+        background-color: red
+      & .select__input, button
+        color: red!important
+        &::placeholder
+          color: red
+    & .help-block
+      opacity: 1
+      transform: translateY(0px)
+
+.select__toggle
+  cursor: pointer
+  width: 100%
+  user-select: none
+  justify-content: space-between
+  position: relative
+  height: 50px
+  padding: 0 20px
+  background: white
+  &::after
+    content: ''
+    min-width: 16px
+    max-width: 16px
+    height: 9px
+    position: absolute
+    top: 50%
+    right: 12px
+    transform: translateY(-50%)
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='17' height='9' viewBox='0 0 17 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.2545 0.0985107L16.1826 1.02659L8.49983 8.70938L0.817039 1.02659L1.74512 0.0985101L8.49983 6.8527L15.2545 0.0985107Z' fill='black'/%3E%3C/svg%3E")
+    transition: all .2s
+    pointer-events: none
+    @include bg-center
+      background-size: contain
+  & .select__input, & button
+    width: 100%
+    height: 100%
+    border: none
+    background: none
+    font-family: 'Inter' ,sans-serif!important
+    font-weight: 700!important
+    font-size: rem(13)!important
+    line-height: rem(20)!important
+    color: black!important
+    cursor: pointer
+    outline: none
+    padding: 0
+    &::placeholder
+      font-family: 'Inter' ,sans-serif!important
+      font-weight: 700!important
+      font-size: rem(16)!important
+      line-height: rem(20)!important
+      color: black!important
+  &:hover
+    &:before
+      opacity: 1
+  & .select__input
+    &::placeholder
+      font-weight: 400
+      font-size: 16px
+      line-height: 25px
+      letter-spacing: 0.1px
+  & button
+    text-align: start
+    transition: all .2s
+  & label
+    position: absolute
+    top: 50%
+    transform: translateY(-50%)
+    left: 20px
+    font-weight: 700
+    font-size: rem(13)
+    line-height: rem(16)
+    color: black
+    transition: all .2s
+    pointer-events: none
+
+.select__dropdown
+  max-height: 0
+  overflow: auto
+  z-index: 2
+  //transition: all .3s
+  position: absolute
+  left: -1px
+  top: 100%
+  width: calc(100% + 2px)
+  border: 1px solid black
+  border-top: none
+  background-color: white
+
+  &::-webkit-scrollbar
+    background: #F1F1F1
+    width: 9px
+    height: auto
+  &::-webkit-scrollbar-thumb
+    border-radius: 30px
+    background-color: #2e2e2e
+    border: 2px solid #f1f1f1
+  &::-webkit-scrollbar-track
+    background-color: #F1F1F1
+  &._empty
+    display: none
+
+.select__options
+  margin-bottom: 10px
+  padding: 2px 0
+  list-style: none
+
+.select__option
+  display: block
+  margin: 7px 0
+  padding: 5px 42px 5px 20px
+  font-size: rem(13)
+  line-height: rem(20)
+  font-weight: 700
+  transition: 0.2s background-color ease-in-out
+  color: black
+  &._click-disabled
+    pointer-events: none!important
+  &:hover
+    //color: $dark-blue
+    cursor: pointer
+  &._hide
+    display: none
+  & mark
+    background: none
+    font-weight: 700
+    //color: $dark-blue
+
+.select__option_selected
+  //color: $dark-blue
+  position: relative
+  background-color: rgba(0,0,0,.05)
+  &::after
+    display: none
+    content: ''
+    width: 24px
+    height: 24px
+    position: absolute
+    top: 50%
+    right: 15px
+    transform: translateY(-50%)
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.00016 16.1701L4.83016 12.0001L3.41016 13.4101L9.00016 19.0001L21.0002 7.00009L19.5902 5.59009L9.00016 16.1701Z' fill='%2385ACA6'/%3E%3C/svg%3E")
+    @include bg-center
+      background-size: contain
+
+
+.select-simple
+  border: none
+  & .select__toggle
+    padding: 0
+    display: flex
+    align-items: center
+    justify-content: center
+    gap: 0 10px
+    &:after
+      position: static
+      left: auto
+      top: auto
+      transform: translate(0px)
+    & label
+      position: static
+      left: auto
+      top: auto
+      transform: translate(0px)
+      width: auto
+    & button
+      position: absolute
+      left: 0
+      top: 0
+      width: 100%
+      height: 100%
+
+  &._selected
+    & .select__toggle
+      & label
+        display: none
+      & button
+        position: static
+        left: auto
+        top: auto
+        width: auto
+        height: auto
+
+
+  & .select__dropdown
+    border: none
+    & .select__option
+      text-align: center
+      font-size: rem(16)
+      font-weight: 400
+
+// Btns
+.btn-primary
+  color: white
+  text-align: center
+  font-size: rem(18)
+  font-weight: 400
+  line-height: normal
+  border-radius: 10px
+  background: var(--black)
+  display: block
+  padding: 17px 32px
+
+// Comparison
+.comparison
+  margin: 90px 0
+  & .title
+    margin-bottom: 58px
+  & .content
+    & .comparison-header, & .comparison-body
+      display: grid
+      grid-template-columns: 270px auto
+
+
+    & .comparison-header
+      border-radius: 10px
+      position: relative
+      &:before
+        content: ''
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        border: 2px solid var(--black)
+        pointer-events: none
+        z-index: 2
+        border-radius: 10px
+
+      & .comparison-sidebar
+        & .text
+          &.sidebar-title
+            --height: 45px
+            align-items: flex-end
+          &:last-child
+            display: none
+
+      & .comparison-main
+        border-radius: 10px 10px 0 0
+        overflow: hidden
+        & .row
+          background: white!important
+          border-radius: 0px!important
+          border-color: rgba(0,0,0,0)!important
+          align-items: flex-end
+          &:before, &:after
+            opacity: 0!important
+          &:last-child
+            //border-radius: 0 0 10px 0!important
+            padding: 30px 0
+          & .col
+            justify-content: center!important
+            & .img
+              width: 100%
+              max-width: 80%
+              margin: 0 auto
+              & img
+                width: 100%
+            & .text
+              font-size: rem(22)
+              text-align: center
+              line-height: normal
+
+            & .select
+              & .select__toggle
+                height: auto
+                min-height: 26px
+                & label, & button
+                  font-size: rem(18)!important
+                  line-height: normal!important
+                  font-weight: 400!important
+
+
+    & .comparison-body
+      & .comparison-main
+        & .row
+          &:first-child
+            //padding: 20px 0
+            border-radius: 0px
+
+    & .comparison-sidebar
+      & .text
+        --height: 32px
+        color: var(--black)
+        font-size: rem(14)
+        line-height: normal
+        min-height: var(--height)
+        border-radius: 10px 0 0 10px
+        display: flex
+        align-items: center
+        justify-content: flex-start
+        padding-left: 27px
+        border-top: 1px solid rgba(0, 0, 0, 0)
+        border-bottom: 1px solid rgba(0, 0, 0, 0)
+        position: relative
+        &:after
+          content: ''
+          position: absolute
+          left: 0
+          top: 0
+          width: 100%
+          height: 100%
+          border: 2px solid black
+          border-right: none
+          border-radius: 10px 0 0 10px
+          opacity: 0
+          pointer-events: none
+
+        &.hovered
+          &:after
+            opacity: 1
+        &:nth-last-child(odd)
+          border-color: rgba(0, 0, 0, 0.05)
+          background: rgba(0, 0, 0, 0.02)
+
+        &:last-child
+          background-color: var(--bg-gray)
+          border-color: rgba(0,0,0,0)
+        &.sidebar-title
+          font-size: rem(22)
+          --height: 64px
+          background-color: transparent
+          border-color: transparent
+
+
+
+    & .comparison-main
+      & .row
+        display: grid
+        grid-template-columns: repeat(2, 1fr)
+        align-items: center
+        gap: 0 50px
+        --height: 32px
+        border-top: 1px solid rgba(0, 0, 0, 0)
+        border-bottom: 1px solid rgba(0, 0, 0, 0)
+        min-height: var(--height)
+        background-color: white
+        position: relative
+        &:after
+          content: ''
+          position: absolute
+          left: 0
+          top: 0
+          width: 100%
+          height: 100%
+          border: 2px solid black
+          border-left: none
+          border-radius: 0px 10px 10px 0
+          opacity: 0
+          pointer-events: none
+        &.hovered
+          border-radius: 0px 10px 10px 0
+          &:after
+            opacity: 1
+        & .col
+          display: flex
+          align-items: center
+          &:first-child
+            justify-content: flex-end
+            text-align: end
+          &:last-child
+            justify-content: flex-start
+            text-align: start
+
+        &:nth-last-child(odd)
+          border-radius: 0 10px 10px 0
+          border-color: rgba(0, 0, 0, 0.05)
+          position: relative
+          //overflow: hidden
+          &:before
+            content: ''
+            position: absolute
+            left: 0
+            top: 0
+            width: 100%
+            height: 100%
+            background: rgba(0, 0, 0, 0.02)
+            pointer-events: none
+        &:last-child
+          padding-top: 16px
+          gap: 0 20px
+          background-color: var(--bg-gray)
+          border-color: rgba(0,0,0,0)
+          &:before
+            display: none
+        &:nth-last-child(2)
+          border-radius: 0 0 10px 10px
+        & .btn-primary
+          width: 100%
+          padding-left: 0
+          padding-right: 0
+
+
+
+@media screen and (max-width: 768px)
+  .btn-primary
+    padding: 13px 26px
+
+  .container
+    max-width: 580px
+    padding: 0 15px
+
+  .comparison
+    margin: 70px 0
+    & .content
+      & .comparison-header, & .comparison-body
+        grid-template-columns: 165px auto
+
+
+      & .comparison-header
+        & .comparison-main
+          & .row
+            & .col
+              & .text
+                font-size: rem(18)
+
+
+      & .comparison-sidebar
+        & .text
+          font-size: rem(14)
+          padding-left: 13px
+          &.sidebar-title
+            font-size: rem(18)
+
+      & .comparison-main
+        & .row
+          gap: 0 35px
+          &:last-child
+            gap: 0 10px
+            padding-top: 10px
+
+
+
+
+
+
+
+

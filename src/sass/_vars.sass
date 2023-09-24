@@ -1,0 +1,23 @@
+@use 'sass:math'
+
+\:root
+  --black: #000000
+  --bg-gray: #F2F2F2
+
+
+@function rem($value)
+  $res: math.div($value, 16) + rem
+  @return $res
+
+
+@function em($value)
+  $res: math.div($value, 16) + em
+  @return $res
+
+@mixin bg-center
+  background-position: center
+  background-repeat: no-repeat
+  @content
+
+@mixin vh
+  height: calc(var(--vh, 1vh) * 100)
