@@ -177,7 +177,7 @@ window.addEventListener("load", function () {
 
   // Get Google Sheet data
   var tableData = [];
-  fetch("https://script.google.com/macros/s/AKfycbwO804MBRnqZngk8zF1W35at11Ah_Bg7dNU-yE_Hsa8m8G6-y42kl9yg0dL8oCgIYfF8A/exec").then(function (response) {
+  fetch("https://script.google.com/macros/s/AKfycbyzvMgfs4tEvkKJ3hiW3z2KHosatQcNL0byIvmnKQA_Sz3O1KtNxQp3FqV87sY0da18Dg/exec").then(function (response) {
     return response.json();
   }).then(function (result) {
     var productsName = [];

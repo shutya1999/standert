@@ -198,7 +198,7 @@ window.addEventListener("load", () => {
     // Get Google Sheet data
     let tableData = [];
 
-    fetch("https://script.google.com/macros/s/AKfycbwO804MBRnqZngk8zF1W35at11Ah_Bg7dNU-yE_Hsa8m8G6-y42kl9yg0dL8oCgIYfF8A/exec")
+    fetch("https://script.google.com/macros/s/AKfycbyzvMgfs4tEvkKJ3hiW3z2KHosatQcNL0byIvmnKQA_Sz3O1KtNxQp3FqV87sY0da18Dg/exec")
         .then(response => response.json())
         .then(function (result){
             let productsName = [];
