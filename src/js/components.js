@@ -32,19 +32,19 @@ const breakpoint_laptop = window.matchMedia('(max-width:1339px)'); // 1024 - 127
 const breakpoint_desktop = window.matchMedia('(min-width:1440px)'); // 1279 >
 const breakpointChecker = function () {
     if (breakpoint_mob.matches === true) {
-        console.log('mobile');
+        // console.log('mobile');
         return false;
     }
     if (breakpoint_tablet.matches === true) {
-        console.log('tablet');
+        // console.log('tablet');
         return false;
     }
     if (breakpoint_laptop.matches === true) {
-        console.log('laptop');
+        // console.log('laptop');
         return false;
     }
     if (breakpoint_desktop.matches === true) {
-        console.log('desktop');
+        // console.log('desktop');
         return false;
     }
 };
@@ -132,13 +132,11 @@ window.addEventListener("load", () => {
 
     // Select
     const selects = document.querySelectorAll('.js-select');
-
     if (selects.length){
         selects.forEach(select => {
             new CustomSelect(select, {});
         })
     }
-
     let model1, model2, size1, size2;
     function initModelsSelect(models){
         let modelData = [];
@@ -146,97 +144,169 @@ window.addEventListener("load", () => {
             modelData.push([index, model]);
         })
 
-        model1 = new CustomSelect('#model-1', {
-            name: 'model-1',
-            placeholder: '',
-            targetValue: modelData[0][0],
-            options: modelData,
-            onSelected(select, option) {
-                generateTable();
-            }
-        })
+        if (model1 === undefined){
+            model1 = new CustomSelect('#model-1', {
+                name: 'model-1',
+                placeholder: '',
+                targetValue: modelData[0][0],
+                options: modelData,
+                onSelected(select, option) {
+                    generateTable();
+                }
+            })
+        }else {
+            model1.option = modelData;
+            model1.value = modelData[0][0];
+        }
 
-        model2 = new CustomSelect('#model-2', {
-            name: 'model-2',
-            placeholder: '',
-            targetValue: modelData[1][0],
-            options: modelData,
-            onSelected(select, option) {
-                generateTable();
-            }
-        })
+        if (model2 === undefined){
+            model2 = new CustomSelect('#model-2', {
+                name: 'model-2',
+                placeholder: '',
+                targetValue: modelData[1][0],
+                options: modelData,
+                onSelected(select, option) {
+                    generateTable();
+                }
+            })
+        }else {
+            model2.option = modelData;
+            model2.value = modelData[1][0];
+        }
+
     }
-
     function initSizeSelect(sizes){
         let sizesData = [];
         sizes.forEach(size => {
             sizesData.push([size, size]);
         })
 
-        size1 = new CustomSelect('#size-1', {
-            name: 'size-1',
-            placeholder: '',
-            targetValue: sizesData[0][0],
-            options: sizesData,
-            onSelected(select, option) {
-                generateTable();
-            }
-        })
+        if (size1 === undefined){
+            size1 = new CustomSelect('#size-1', {
+                name: 'size-1',
+                placeholder: '',
+                targetValue: sizesData[0][0],
+                options: sizesData,
+                onSelected(select, option) {
+                    generateTable();
+                }
+            })
+        }else {
+            size1.option = sizesData;
+            size1.value = sizesData[0][0];
+        }
 
-        size2 = new CustomSelect('#size-2', {
-            name: 'size-2',
-            placeholder: '',
-            targetValue: sizesData[0][0],
-            options: sizesData,
-            onSelected(select, option) {
-                generateTable();
-            }
-        })
+
+        if (size2 === undefined){
+            size2 = new CustomSelect('#size-2', {
+                name: 'size-2',
+                placeholder: '',
+                targetValue: sizesData[0][0],
+                options: sizesData,
+                onSelected(select, option) {
+                    generateTable();
+                }
+            })
+        }else {
+            size2.option = sizesData;
+            size2.value = sizesData[0][0];
+        }
     }
 
 
     // Get Google Sheet data
     let tableData = [];
 
-    fetch("https://script.google.com/macros/s/AKfycbyzvMgfs4tEvkKJ3hiW3z2KHosatQcNL0byIvmnKQA_Sz3O1KtNxQp3FqV87sY0da18Dg/exec")
-        .then(response => response.json())
-        .then(function (result){
-            let productsName = [];
-            let frame_size = [];
 
-            result.forEach(item => {
-                let params = item['data'];
-                frame_size = getParamsByName('Frame size', item.data);
-                productsName.push(item['sheetName']);
+    if (localStorage.getItem('table') && localStorage.getItem('table') !== ""){
+        tableData = JSON.parse(localStorage.getItem('table'));
+        let productsName = [];
 
-                let t = {};
-
-                t['name'] = item['sheetName'];
-                t['frame_size'] = frame_size;
-                t['params'] =  {};
-
-
-                frame_size.forEach((size, index) => {
-                    t['params'][size] = {};
-
-                    params.forEach(param => {
-                        if (param[0].trim() !== ''){
-                            t['params'][size][param[0]] = param[index + 1];
-                        }
-                    })
-                })
-
-                tableData.push(t);
-            })
-
-            initModelsSelect(productsName);
-            initSizeSelect(frame_size);
-            generateTable();
+        tableData.forEach(item => {
+            productsName.push(item['name']);
         })
-        .catch(error => console.log('error', error));
+        initModelsSelect(productsName);
+        initSizeSelect(tableData[0]['frame_size']);
+        generateTable();
+
+        // Validation localstorage data and google sheets data
+        tableData = [];
+        requestData()
+            .then(res => {
+                let googleData = res.tableData;
+                if (JSON.stringify(googleData) !== localStorage.getItem('table')){
+                    // console.log('!=');
+                    initModelsSelect(res.productsName);
+                    initSizeSelect(res.frame_size);
+                    generateTable();
+                    localStorage.setItem('table', JSON.stringify(tableData));
+                }else {
+                    // console.log('==')
+                }
+            })
+    }else {
+        requestData()
+            .then(res => {
+                initModelsSelect(res.productsName);
+                initSizeSelect(res.frame_size);
+                generateTable();
+
+                localStorage.setItem('table', JSON.stringify(tableData));
+            })
+    }
+
+
+    async function requestData(){
+        let res = {};
+
+        await fetch("https://script.google.com/macros/s/AKfycbyzvMgfs4tEvkKJ3hiW3z2KHosatQcNL0byIvmnKQA_Sz3O1KtNxQp3FqV87sY0da18Dg/exec")
+            .then(response => response.json())
+            .then(function (result){
+                let productsName = [];
+                let frame_size = [];
+
+                result.forEach(item => {
+                    let params = item['data'];
+                    frame_size = getParamsByName('Frame size', item.data);
+                    productsName.push(item['sheetName']);
+
+                    let t = {};
+
+                    t['name'] = item['sheetName'];
+                    t['frame_size'] = frame_size;
+                    t['params'] =  {};
+
+
+                    frame_size.forEach((size, index) => {
+                        t['params'][size] = {};
+
+                        params.forEach(param => {
+                            if (param[0].trim() !== ''){
+                                t['params'][size][param[0]] = String(param[index + 1]);
+                            }
+                        })
+                    })
+                    tableData.push(t);
+                })
+                console.log(tableData);
+                // localStorage.setItem('table', JSON.stringify(tableData));
+
+
+                res = {
+                    tableData: tableData,
+                    productsName: productsName,
+                    frame_size: frame_size
+                }
+            })
+            .catch(error => console.log('error', error));
+
+
+        return res;
+    }
 
 
     function generateTable(){
+        // console.log(tableData);
         const paramsName = [
             'Specs',
             'Weight',
@@ -266,6 +336,7 @@ window.addEventListener("load", () => {
 
         let modelSize_1 = +size1.value;
         let modelSize_2 = +size2.value;
+
 
         let params_product_1 = tableData[modelName_1].params[modelSize_1];
         let params_product_2 = tableData[modelName_2].params[modelSize_2];
@@ -304,9 +375,6 @@ window.addEventListener("load", () => {
         const img2 = document.querySelector('.comparison-header .comparison-main .row:nth-child(3) .col:nth-child(2) img');
         img2.src = params_product_2['Image URL'];
     }
-
-
-
     function getParamsByName(name, data){
         let copy = JSON.parse(JSON.stringify(data));
 

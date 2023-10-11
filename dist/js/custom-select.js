@@ -70,7 +70,7 @@ var CustomSelect = /*#__PURE__*/function () {
       if (selected) {
         selected.classList.remove(CLASS_NAME_SELECTED);
       }
-      this._elToggle.textContent = 'Выберите из списка';
+      this._elToggle.textContent = this._params.placeholder;
       this._elToggle.value = '';
       this._elToggle.dataset.index = -1;
       this._elRoot.dispatchEvent(new CustomEvent('select.change'));
@@ -90,7 +90,6 @@ var CustomSelect = /*#__PURE__*/function () {
     key: "_oninput",
     value: function _oninput(elem, params) {
       var _this = this;
-      // console.log(params);
       this._elToggle.addEventListener('input', function () {
         var value = _this._elToggle.value.trim();
         var items = [];
@@ -158,7 +157,7 @@ var CustomSelect = /*#__PURE__*/function () {
       var _this2 = this;
       var isExists = false;
       this._elRoot.querySelectorAll('.select__option').forEach(function (option) {
-        if (option.dataset['value'] === value) {
+        if (option.dataset['value'] === String(value)) {
           isExists = true;
           return _this2._update(option);
         }
